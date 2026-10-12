@@ -9,6 +9,7 @@
  *   ping         health check
  *   summary      counts for the operator (admin key; never returns personal data)
  *   purge_tests  deletes rows created by automated tests (admin key)
+ *   reset_stats  clears the Stats tab (admin key; used once, before launch, to drop test traffic)
  *
  * The spreadsheet is created on first use and its id kept in Script Properties (SHEET_ID).
  * Only scope: spreadsheets. No e-mail is sent from here. No payment is taken here.
@@ -54,6 +55,7 @@ function handle_(e, req) {
       case 'rights': return json_(rights_(req));
       case 'summary': return json_(summary_(req));
       case 'purge_tests': return json_(purgeTests_(req));
+      case 'reset_stats': return json_(resetStats_(req));
       case 'ping': return json_({ ok: true, app: APP.name, consentVersion: APP.consentVersion });
       default: return json_({ ok: false, error: 'unknown_action' });
     }
@@ -329,6 +331,16 @@ function purgeTests_(req) {
       var sh = tab_(t[0], t[1]);
       for (var r = sh.getLastRow(); r >= 2; r--) if (sh.getRange(r, t[2] + 1).getValue() === 'yes') { sh.deleteRow(r); n++; }
     });
+    return { ok: true, deleted: n };
+  });
+}
+
+function resetStats_(req) {
+  checkAdmin_(req);
+  return withLock_(function () {
+    var sh = tab_('Stats', STATS_HEADER);
+    var n = Math.max(sh.getLastRow() - 1, 0);
+    if (n) sh.deleteRows(2, n);
     return { ok: true, deleted: n };
   });
 }

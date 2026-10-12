@@ -4,6 +4,11 @@ import { MIXED, MIXED_PCT, MIXED_GAPS, GEN, GEN_MUST, GEN_MUST_NOT } from '../un
 import { call, e2eCount } from './api.mjs';
 const CP = createRequire(import.meta.url)('../../docs/assets/core.js');
 
+// Fuera del test de medición, el navegador envía Do Not Track: así las pruebas contra el sitio en vivo no inflan las estadísticas.
+test.beforeEach(async ({ page }, info) => {
+  if (!info.title.startsWith('medición')) await page.addInitScript(() => Object.defineProperty(Navigator.prototype, 'doNotTrack', { get: () => '1' }));
+});
+
 const PAGES = ['', 'autodiagnostico/', 'politica-de-privacidad/', 'kit/', 'ley-21719/', 'privacidad/', 'terminos/'];
 
 test('todas las páginas: pie legal, aviso, sin scroll horizontal', async ({ page }) => {
