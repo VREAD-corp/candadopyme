@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="es-CL">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Generador de política de privacidad Ley 21.719 (gratis) | Candado Pyme</title>
+<meta name="description" content="Genera gratis la política de tratamiento de datos personales de tu empresa con los 12 puntos del art. 14 ter de la Ley 19.628 modificada por la Ley 21.719. Para pymes chilenas.">
+<link rel="canonical" href="https://outils.vread.fr/candadopyme/politica-de-privacidad/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Generador de política de privacidad Ley 21.719 (gratis) | Candado Pyme">
+<meta property="og:description" content="Genera gratis la política de tratamiento de datos personales de tu empresa con los 12 puntos del art. 14 ter de la Ley 19.628 modificada por la Ley 21.719. Para pymes chilenas.">
+<meta property="og:url" content="https://outils.vread.fr/candadopyme/politica-de-privacidad/">
+<meta property="og:locale" content="es_CL">
+<meta property="og:site_name" content="Candado Pyme">
+<meta property="og:image" content="https://outils.vread.fr/candadopyme/assets/img/og.png">
+<meta name="theme-color" content="#0e5e55">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,600;7..72,700&family=Public+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../assets/style.css?v=20261013c">
+</head>
+<body data-page="gen">
+<a class="skip" href="#main">Saltar al contenido</a>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="../"><svg viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M10 14V10a6 6 0 0 1 12 0v4"/><rect x="6" y="14" width="20" height="14" rx="2.5" fill="currentColor" fill-opacity=".12"/><path d="M12 21.5l3 3 5.5-6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Candado Pyme</span></a>
+    <nav class="nav" aria-label="Principal">
+        <a href="../autodiagnostico/">Autodiagnóstico</a>
+        <a href="../politica-de-privacidad/" aria-current="page">Política de privacidad</a>
+        <a href="../kit/">Kit</a>
+        <a href="../ley-21719/">Ley 21.719 en simple</a>
+    </nav>
+  </div>
+</header>
+<main id="main">
+<div class="wrap">
+  <h1 style="margin-top:32px">Generador de política de privacidad</h1>
+  <p class="lead" style="max-width:760px">La política que exige el art. 14 ter, con sus 12 puntos, fecha y versión. Completa el formulario y la vista previa se arma a la derecha (abajo en el celular). Lo que escribes se queda en tu navegador.</p>
+  <p class="note" style="max-width:760px">Revisa el texto antes de publicarlo: describe lo que tu empresa hace de verdad, y si algo no calza, edítalo. Es una plantilla de autoayuda, no asesoría legal.</p>
+
+  <div class="gen">
+    <form id="gen" novalidate>
+      <fieldset>
+        <legend>1. Tu empresa (art. 14 ter b y c)</legend>
+        <div class="row"><label for="g-razon">Razón social</label><input id="g-razon" name="razon" type="text" autocomplete="organization" placeholder="Comercial Los Aromos SpA"></div>
+        <div class="row"><label for="g-fantasia">Nombre de fantasía <span class="opt">(opcional)</span></label><input id="g-fantasia" name="fantasia" type="text" placeholder="Café Los Aromos"></div>
+        <div class="row"><label for="g-rut">RUT de la empresa</label><input id="g-rut" name="rut" type="text" inputmode="text" placeholder="76.123.456-7"></div>
+        <div class="row"><label for="g-rep">Representante legal</label><input id="g-rep" name="rep" type="text" placeholder="María Soto Pérez"></div>
+        <div class="row"><label for="g-domicilio">Domicilio postal</label><input id="g-domicilio" name="domicilio" type="text" placeholder="Av. Providencia 1234, of. 56, Providencia, Santiago"></div>
+        <div class="row"><label for="g-email">Correo para solicitudes de datos</label><input id="g-email" name="email" type="email" placeholder="privacidad@tuempresa.cl"></div>
+        <div class="row"><label for="g-form">Formulario de contacto <span class="opt">(URL, opcional)</span></label><input id="g-form" name="form" type="url" placeholder="https://tuempresa.cl/privacidad"></div>
+        <div class="row"><label for="g-delegado">Delegado o encargado de prevención <span class="opt">(nombre y cargo, opcional)</span></label><input id="g-delegado" name="delegado" type="text" placeholder="Dejar vacío si no hay"></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>2. De quién tratas datos</legend>
+        <div data-checks="people"></div>
+      </fieldset>
+      <fieldset>
+        <legend>3. Qué datos tratas</legend>
+        <div data-checks="data"></div>
+      </fieldset>
+      <fieldset>
+        <legend>4. Para qué los usas</legend>
+        <p class="fine">La base legal de cada finalidad se agrega sola, con su artículo.</p>
+        <div data-checks="purposes"></div>
+      </fieldset>
+      <fieldset>
+        <legend>5. Proveedores que tratan datos por ti</legend>
+        <div data-checks="recipients"></div>
+      </fieldset>
+      <fieldset>
+        <legend>6. Fuera de Chile (arts. 27 y 28)</legend>
+        <label class="check"><input type="checkbox" name="intl" id="g-intl"> <span>Algunos datos se guardan o procesan fuera de Chile</span></label>
+        <div class="row" id="intl-detail" hidden>
+          <label for="g-intlDetail">¿Dónde y con quién?</label>
+          <input id="g-intlDetail" name="intlDetail" type="text" placeholder="correo y nube de Google LLC en Estados Unidos">
+          <label for="g-intlBasis" style="margin-top:10px">Garantía usada</label>
+          <select id="g-intlBasis" name="intlBasis">
+            <option>cláusulas contractuales con garantías adecuadas</option>
+            <option>tu consentimiento expreso para esa transferencia específica</option>
+            <option>la necesidad de ejecutar el contrato que tienes con nosotros</option>
+          </select>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>7. Plazos de conservación</legend>
+        <div class="row"><label for="g-ret-clientes">Datos de clientes, después de terminar la relación</label><input id="g-ret-clientes" name="ret_clientes" type="text" value="2 años"></div>
+        <div class="row"><label for="g-ret-postulantes">CV de postulantes no seleccionados</label><input id="g-ret-postulantes" name="ret_postulantes" type="text" value="6 meses"></div>
+        <div class="row"><label for="g-ret-camaras">Grabaciones de cámaras</label><input id="g-ret-camaras" name="ret_camaras" type="text" value="30 días"></div>
+      </fieldset>
+      <fieldset>
+        <legend>8. Seguridad (art. 14 ter e)</legend>
+        <div data-checks="security"></div>
+      </fieldset>
+      <fieldset>
+        <legend>9. Origen de los datos (art. 14 ter j)</legend>
+        <div data-checks="sources"></div>
+      </fieldset>
+      <fieldset>
+        <legend>10. Decisiones automatizadas (art. 14 ter l)</legend>
+        <label class="check"><input type="checkbox" name="auto" id="g-auto"> <span>Tomamos decisiones solo automatizadas que afectan a las personas (por ejemplo, aprobar o rechazar un crédito sin intervención humana)</span></label>
+        <div class="row" id="auto-detail" hidden><label for="g-autoDetail">Descríbela en una frase</label><input id="g-autoDetail" name="autoDetail" type="text"></div>
+      </fieldset>
+      <div class="row"><label for="g-version">Versión</label><input id="g-version" name="version" type="text" value="1.0" style="max-width:120px"></div>
+      <p id="gen-errors" class="err" role="alert" hidden></p>
+      <button class="btn" type="submit" id="gen-submit">Generar la política</button>
+    </form>
+
+    <div class="sticky">
+      <div class="toolbar" id="gen-tools" hidden>
+        <button class="btn" type="button" id="gen-copy" data-mesure="policy_copy">Copiar texto</button>
+        <button class="btn ghost" type="button" id="gen-dl-html" data-mesure="policy_download">Descargar .html</button>
+        <button class="btn ghost" type="button" id="gen-dl-txt" data-mesure="policy_download">Descargar .txt</button>
+      </div>
+      <div class="preview" id="gen-preview" aria-live="polite">
+        <p class="muted">Aquí aparecerá tu política. Completa los campos y pulsa «Generar la política».</p>
+      </div>
+      <p class="fine" style="margin-top:12px">¿Necesitas además el registro de tratamientos, el procedimiento de solicitudes y el de brechas? <a href="../kit/" data-mesure="cta_click">Ver el kit</a>.</p>
+    </div>
+  </div>
+</div>
+
+</main>
+<footer class="foot">
+  <div class="wrap cols">
+    <div>
+      <p><b>Candado Pyme</b> es un servicio de READ FRANCE SAS (SIREN 988 741 773), 11 rue Rouvet, 75019 París, Francia. Contacto: <a href="mailto:octave@vread.fr">octave@vread.fr</a>. Vendemos solo a empresas.</p>
+      <p class="disclaimer"><b>Aviso:</b> Candado Pyme entrega plantillas de autoayuda. No es asesoría legal ni reemplaza la revisión de un abogado. No tenemos relación con la Agencia de Protección de Datos Personales ni con otro organismo del Estado de Chile. Los textos los preparó Octave, un agente de inteligencia artificial de READ FRANCE, a partir de la Ley N° 21.719 publicada en el Diario Oficial el 13 de diciembre de 2024. Última revisión: 13 de octubre de 2026.</p>
+    </div>
+    <div>
+      <p><a href="../privacidad/">Política de privacidad</a> (Ley 19.628 y Ley 21.719)<br>
+      <a href="../terminos/">Términos y condiciones</a><br>
+      <a href="https://www.bcn.cl/leychile/navegar?idNorma=1209272" rel="noopener">Texto oficial de la Ley 21.719 (BCN)</a></p>
+      <p>Medición de audiencia anónima, sin cookies ni identificadores. Respetamos la señal «Do Not Track».</p>
+    </div>
+  </div>
+</footer>
+<script src="../assets/core.js?v=20261013c" defer></script>
+<script src="../assets/app.js?v=20261013c" defer></script>
+<script src="../assets/mesure.js?v=20261013c" defer></script>
+</body>
+</html>

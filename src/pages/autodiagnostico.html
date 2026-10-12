@@ -1,0 +1,29 @@
+<!--{"title":"Autodiagnóstico Ley 21.719: 15 preguntas para tu pyme | Candado Pyme","description":"Responde 15 preguntas y obtén tu puntaje de preparación para la Ley 21.719 y la lista de brechas, cada una con su artículo. Gratis, sin registro, en tu navegador.","path":"/autodiagnostico/","nav":"diag","priority":"0.9"}-->
+<div class="wrap narrow">
+  <h1 style="margin-top:32px">Autodiagnóstico Ley 21.719</h1>
+  <p class="lead">15 preguntas, unos 10 minutos. Responde por tu empresa como está hoy, no como debería estar. Tus respuestas no salen de tu navegador: no las guardamos ni las enviamos.</p>
+  <p class="fine">Cada pregunta cita el artículo de la Ley 19.628 modificada por la Ley 21.719 que la respalda. «No sé» cuenta como «No»: si nadie en la empresa lo sabe, en la práctica no está hecho.</p>
+
+  <form id="diag" novalidate>
+    <fieldset>
+      <legend>Tu empresa</legend>
+      <label for="size">Ventas del último año calendario (sin IVA)</label>
+      <select id="size" name="size">
+        <option value="">Elige una opción</option>
+        <option value="micro">Hasta 2.400 UF (microempresa)</option>
+        <option value="pequena">Más de 2.400 y hasta 25.000 UF (pequeña)</option>
+        <option value="mediana">Más de 25.000 y hasta 100.000 UF (mediana)</option>
+        <option value="grande">Más de 100.000 UF (grande)</option>
+        <option value="nose">No lo sé</option>
+      </select>
+      <p class="fine">Tramos de la Ley 20.416, art. 2°. Sirve para mostrarte la regla transitoria para empresas de menor tamaño.</p>
+    </fieldset>
+    <div class="progress" aria-live="polite"><span id="progress-text">0 de 15 respondidas</span><div class="bar"><i id="progress-bar"></i></div></div>
+    <div id="questions"><p>Cargando preguntas…</p></div>
+    <p id="diag-error" class="err" role="alert" hidden></p>
+    <button class="btn" type="submit" id="diag-submit">Ver mi resultado</button>
+  </form>
+
+  <div id="diag-result" hidden></div>
+  <noscript><p class="note">El autodiagnóstico necesita JavaScript activado.</p></noscript>
+</div>
