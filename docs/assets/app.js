@@ -4,8 +4,11 @@
   var CP = window.CP;
   window.CP_API = 'https://script.google.com/macros/s/AKfycbzO-UZhV1aVTEDgAj95jk2fktbBxOZNr1eQ9kvv1_nOu6q2LMCnBhsgSt-pBGpJNyKx/exec';
   var params = new URLSearchParams(location.search);
-  var variant = CP.priceVariant(new Date(), params.get('precio'));
+  // Variante de precio: la resuelve cro.js (OCTAVE_XP 'price', alterna por día de Santiago, ?precio=a|b la fuerza).
+  // Si cro.js no cargó, la misma regla de core.js da la misma letra.
+  var variant = (window.octaveCro && window.octaveCro.v('price')) || CP.priceVariant(new Date(), params.get('precio'));
   window.cpVariant = variant;
+  function goal(g) { if (window.octaveCro) window.octaveCro.goal(g); }
   var price = CP.PRICES[variant];
   function tr(e) { if (window.cpTrack) window.cpTrack(e); }
   function $(s, r) { return (r || document).querySelector(s); }
@@ -158,6 +161,7 @@
       var a = document.createElement('a');
       a.href = URL.createObjectURL(new Blob([content], { type: type + ';charset=utf-8' }));
       a.download = name;
+      goal('download');
       document.body.appendChild(a);
       a.click();
       setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
@@ -217,6 +221,8 @@
         .then(function (res) {
           if (!res.ok) throw new Error(res.field ? 'campo ' + res.field : res.error);
           tr('preorder_submit');
+          goal('preorder');
+          if (body.buzon) goal('waitlist');
           po.hidden = true;
           var ok = $('#p-ok');
           ok.hidden = false;

@@ -94,12 +94,30 @@ test('generador: RUT inválido se rechaza', async ({ page }) => {
   await expect(page.locator('#gen-errors')).toContainText('El RUT no es válido');
 });
 
-test('precio A/B: variante b muestra $79.000 y la oferta correspondiente', async ({ page }) => {
-  await page.goto('kit/?precio=b');
+test('precio A/B (cro.js, OCTAVE_XP price): ?precio=b muestra $79.000 y la oferta correspondiente', async ({ page }) => {
+  // cro.js no envía nada en las pruebas (octave_notrack=1, navigator.webdriver): ningún lote kind 'cro' sale.
+  const croPosts = [];
+  page.on('request', (r) => { if (r.method() === 'POST' && (r.postData() || '').includes('"kind":"cro"')) croPosts.push(r.url()); });
+  await page.goto('kit/?precio=b&octave_notrack=1');
+  await expect(page.locator('script[src*="assets/cro.js"][data-site="candadopyme"]')).toHaveCount(1);
+  await expect(page.locator('html')).toHaveAttribute('data-xp-price', 'b');
+  expect(await page.evaluate(() => [window.octaveCro.v('price'), window.cpVariant])).toEqual(['b', 'b']);
   await expect(page.locator('.price [data-price]')).toHaveText('$79.000');
+  await expect(page.locator('#p-submit')).toContainText('$79.000');
   await expect(page.locator('#p-offer')).toHaveValue('kit-79000');
-  await page.goto('kit/?precio=a');
+  await page.goto('kit/?precio=a&octave_notrack=1');
+  await expect(page.locator('html')).toHaveAttribute('data-xp-price', 'a');
   await expect(page.locator('#p-submit')).toContainText('$39.000');
+  await expect(page.locator('#p-offer')).toHaveValue('kit-39000');
+  // Sin parámetro: la variante del día calendario de Santiago, igual que antes, sin nada guardado.
+  await page.goto('?octave_notrack=1');
+  const want = CP.priceVariant(new Date());
+  await expect(page.locator('html')).toHaveAttribute('data-xp-price', want);
+  await expect(page.locator('[data-price]').first()).toHaveText(CP.clp(CP.PRICES[want]));
+  expect(await page.evaluate(() => Object.keys(sessionStorage).filter((k) => k.startsWith('oxp_')))).toEqual([]);
+  await page.goto('privacidad/?octave_notrack=1');
+  await expect(page.locator('main')).toContainText('Pruebas A/B');
+  expect(croPosts).toEqual([]);
 });
 
 test('preventa: valida RUT y B2B, y registra la reserva en la hoja', async ({ page }, info) => {

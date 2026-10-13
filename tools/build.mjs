@@ -8,7 +8,12 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const BASE_URL = (process.env.BASE_URL || 'https://outils.vread.fr/candadopyme').replace(/\/$/, '');
 const BASE_PATH = new URL(BASE_URL + '/').pathname; // "/candadopyme/"
 const UPDATED = '2026-10-13';
-const ASSET_V = '20261013d';
+const ASSET_V = '20261013e';
+// Web app de Apps Script propio (gas/): contadores de mesure.js, comportamiento de cro.js y preventa.
+const API = 'https://script.google.com/macros/s/AKfycbzO-UZhV1aVTEDgAj95jk2fktbBxOZNr1eQ9kvv1_nOu6q2LMCnBhsgSt-pBGpJNyKx/exec';
+// Prueba de precio (A/B): A = CLP 39.000, B = CLP 79.000, alterna por día calendario de Santiago (sin almacenamiento),
+// ?precio=a|b fuerza una. cro.js la resuelve antes de app.js, que lee window.octaveCro.v('price').
+const OCTAVE_XP = [{ id: 'price', variants: ['a', 'b'], mode: 'day', tz: 'America/Santiago', param: 'precio' }];
 
 const LOGO = '<svg viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M10 14V10a6 6 0 0 1 12 0v4"/><rect x="6" y="14" width="20" height="14" rx="2.5" fill="currentColor" fill-opacity=".12"/><path d="M12 21.5l3 3 5.5-6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
@@ -44,6 +49,8 @@ ${meta.noindex ? '<meta name="robots" content="noindex">\n' : ''}<meta property=
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,600;7..72,700&family=Public+Sans:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="${root}assets/style.css?v=${ASSET_V}">${ld}
+<script>window.OCTAVE_XP = ${JSON.stringify(OCTAVE_XP)};</script>
+<script src="${root}assets/cro.js?v=${ASSET_V}" data-site="candadopyme" data-api="${API}" data-hosts="outils.vread.fr candadopyme.github.io" data-cta='.btn,[data-mesure="cta_click"]' defer></script>
 </head>
 <body data-page="${meta.nav || ''}">
 <a class="skip" href="#main">Saltar al contenido</a>
@@ -68,7 +75,7 @@ ${body.replaceAll('{{root}}', root)}
       <p><a href="${root}privacidad/">Política de privacidad</a> (Ley 19.628 y Ley 21.719)<br>
       <a href="${root}terminos/">Términos y condiciones</a><br>
       <a href="https://www.bcn.cl/leychile/navegar?idNorma=1209272" rel="noopener">Texto oficial de la Ley 21.719 (BCN)</a></p>
-      <p>Medición de audiencia anónima, sin cookies ni identificadores. Respetamos la señal «Do Not Track».</p>
+      <p>Medición anónima de audiencia y de uso del sitio (solo totales diarios), sin cookies ni identificadores. Respetamos las señales «Do Not Track» y «Global Privacy Control».</p>
     </div>
   </div>
 </footer>

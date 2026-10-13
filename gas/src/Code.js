@@ -7,10 +7,15 @@
  *                A hit flagged `excluded` by mesure.js (crawler or headless user agent, navigator.webdriver, or our
  *                own tests with octave_notrack=1) is counted in the `Exclus` tab by reason instead, so the summary
  *                shows counted and raw visits side by side.
+ *                kind 'cro': the once-per-page behaviour batch of cro.js → Cro.js (vendored byte-identical from
+ *                octave-checkout): daily counters in the Comportement and Experiences tabs (A/B 'price': a | b).
+ *   cro          aggregated behaviour + A/B summary for the CRO report (key: Script Property CRO_KEY_SHA256)
+ *   cro_init     POST only: stores the SHA-256 of the CRO read key once (tools/cro-keys.mjs in vread-revenue-lab)
  *   preorder     B2B pre-sale / waitlist for the Ley 21.719 kit (Preventa tab): company RUT + razón social required
  *   rights       data-subject request about our own data: acceso | rectificacion | supresion | oposicion | portabilidad | bloqueo
  *   ping         health check
- *   summary      counts for the operator (admin key; never returns personal data)
+ *   summary      counts for the operator (admin key; never returns personal data), with `cro`: croSummary_ of
+ *                from..to (yyyy-MM-dd, default the last 7 days)
  *   purge_tests  deletes rows created by automated tests (admin key)
  *   reset_stats  clears the Stats tab (admin key; used once, before launch, to drop test traffic)
  *
@@ -46,19 +51,32 @@ var EXCL_KEYS = 6;
 // 'legacy': a hit without `v` comes from a mesure.js older than these checks (often a crawler's cached copy).
 var EXCL_REASONS = ['webdriver', 'bot', 'notrack', 'legacy'];
 
-function doGet(e) { return handle_(e, (e && e.parameter) || {}); }
+/* ---------- CRO (Cro.js): the host settings it needs ---------- */
+var CRO_SITES_ = APP.sites;
+var CRO_EXPERIMENTS_ = { price: ['a', 'b'] }; // = OCTAVE_XP in tools/build.mjs (A = CLP 39.000, B = CLP 79.000)
+var CRO_TZ_ = APP.tz;                          // same date column as the Stats tab
+function croBook_() { return ss_(); }
+/** Same page keys as the Stats tab. */
+function croPage_(site, page) { return trackPage_(page); }
+
+function doGet(e) { return handle_(e, (e && e.parameter) || {}, false); }
 
 function doPost(e) {
   var req = {};
   try { req = JSON.parse((e && e.postData && e.postData.contents) || '{}') || {}; } catch (err) { return json_({ ok: false, error: 'bad_json' }); }
-  return handle_(e, req);
+  return handle_(e, req, true);
 }
 
-function handle_(e, req) {
+function handle_(e, req, isPost) {
   var action = String((e && e.parameter && e.parameter.action) || req.action || '');
   try {
     switch (action) {
-      case 'track': return json_(track_(req));
+      // kind 'cro': cro.js batch, validated by Cro.js before (and instead of) the mesure.js validation.
+      case 'track': return json_(req.kind === 'cro' ? croTrack_(req) : track_(req));
+      case 'cro': return json_(croAction_(req));
+      case 'cro_init':
+        if (!isPost) return json_({ ok: false, error: 'method_not_allowed' });
+        return json_(croInit_(req));
       case 'preorder': return json_(preorder_(req));
       case 'rights': return json_(rights_(req));
       case 'summary': return json_(summary_(req));
@@ -351,8 +369,22 @@ function summary_(req) {
     out.excluded[k] = (out.excluded[k] || 0) + Number(r[6] || 0);
     if (r[3] === 'view') { var v = view(cell_(r[0])); v.excluded += Number(r[6] || 0); v.raw += Number(r[6] || 0); }
   });
+  out.cro = croSummaryRange_(req);
   if (req.email) out.hasEmail = po.getLastRow() >= 2 && po.getRange(2, 3, po.getLastRow() - 1, 1).getValues().some(function (r) { return String(r[0]) === String(req.email).toLowerCase(); });
   return out;
+}
+
+/** croSummary_ of req.from..req.to (yyyy-MM-dd), default the last `days` (1–92, default 7) days in Santiago. */
+function croSummaryRange_(req) {
+  var re = /^\d{4}-\d{2}-\d{2}$/;
+  var to = re.test(String(req.to || '')) ? String(req.to) : croToday_();
+  var from = String(req.from || '');
+  if (!re.test(from)) {
+    var t = new Date(to + 'T12:00:00Z');
+    t.setUTCDate(t.getUTCDate() - Math.min(92, Math.max(1, Math.floor(Number(req.days) || 7))) + 1);
+    from = t.toISOString().slice(0, 10);
+  }
+  return croSummary_(from, to);
 }
 
 function purgeTests_(req) {

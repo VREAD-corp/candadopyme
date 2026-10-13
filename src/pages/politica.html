@@ -5,7 +5,7 @@
   <p class="note" style="max-width:760px">Revisa el texto antes de publicarlo: describe lo que tu empresa hace de verdad, y si algo no calza, edítalo. Es una plantilla de autoayuda, no asesoría legal.</p>
 
   <div class="gen">
-    <form id="gen" novalidate>
+    <form id="gen" data-section="formulario" novalidate>
       <fieldset>
         <legend>1. Tu empresa (art. 14 ter b y c)</legend>
         <div class="row"><label for="g-razon">Razón social</label><input id="g-razon" name="razon" type="text" autocomplete="organization" placeholder="Comercial Los Aromos SpA"></div>
@@ -74,7 +74,7 @@
     </form>
 
     <div class="sticky">
-      <div class="toolbar" id="gen-tools" hidden>
+      <div class="toolbar" id="gen-tools" data-section="descargas" hidden>
         <button class="btn" type="button" id="gen-copy" data-mesure="policy_copy">Copiar texto</button>
         <button class="btn ghost" type="button" id="gen-dl-html" data-mesure="policy_download">Descargar .html</button>
         <button class="btn ghost" type="button" id="gen-dl-txt" data-mesure="policy_download">Descargar .txt</button>
