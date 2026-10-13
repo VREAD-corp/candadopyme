@@ -1,12 +1,12 @@
 import { test, expect } from '@playwright/test';
 import { createRequire } from 'node:module';
 import { MIXED, MIXED_PCT, MIXED_GAPS, GEN, GEN_MUST, GEN_MUST_NOT } from '../unit/fixtures.mjs';
-import { call, e2eCount } from './api.mjs';
+import { call, excludedCount } from './api.mjs';
 const CP = createRequire(import.meta.url)('../../docs/assets/core.js');
 
-// Fuera del test de medición, el navegador envía Do Not Track: así las pruebas contra el sitio en vivo no inflan las estadísticas.
-test.beforeEach(async ({ page }, info) => {
-  if (!info.title.startsWith('medición')) await page.addInitScript(() => Object.defineProperty(Navigator.prototype, 'doNotTrack', { get: () => '1' }));
+// Las pruebas nunca cuentan como visitas: octave_notrack=1 manda sus hits al contador aparte (pestaña Exclus, motivo notrack).
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('octave_notrack', '1'));
 });
 
 const PAGES = ['', 'autodiagnostico/', 'politica-de-privacidad/', 'kit/', 'ley-21719/', 'privacidad/', 'terminos/'];
@@ -123,15 +123,15 @@ test('preventa: valida RUT y B2B, y registra la reserva en la hoja', async ({ pa
   expect(s.hasEmail).toBe(true);
 });
 
-test('medición anónima: los contadores suben (view y diag_complete)', async ({ page }) => {
+test('medición anónima: los contadores de pruebas suben (view y diag_complete), no las visitas', async ({ page }) => {
   await page.addInitScript(() => { window.cpForceTrack = true; });
-  const before = { view: await e2eCount('view'), diag_complete: await e2eCount('diag_complete') };
-  await page.goto('autodiagnostico/?utm_source=e2e');
+  const before = { view: await excludedCount('view'), diag_complete: await excludedCount('diag_complete') };
+  await page.goto('autodiagnostico/');
   for (const q of CP.QUESTIONS) await page.locator(`#q-${q.id} input[value="no"]`).check({ force: true });
   await page.getByRole('button', { name: 'Ver mi resultado' }).click();
   await expect(page.locator('.score')).toHaveText('0%');
-  await expect.poll(async () => await e2eCount('view'), { timeout: 30000 }).toBeGreaterThan(before.view);
-  await expect.poll(async () => await e2eCount('diag_complete'), { timeout: 30000 }).toBeGreaterThan(before.diag_complete);
+  await expect.poll(async () => await excludedCount('view'), { timeout: 30000 }).toBeGreaterThan(before.view);
+  await expect.poll(async () => await excludedCount('diag_complete'), { timeout: 30000 }).toBeGreaterThan(before.diag_complete);
   // Sin cookies
   expect(await page.context().cookies()).toEqual([]);
 });

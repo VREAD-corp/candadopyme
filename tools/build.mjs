@@ -8,7 +8,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const BASE_URL = (process.env.BASE_URL || 'https://outils.vread.fr/candadopyme').replace(/\/$/, '');
 const BASE_PATH = new URL(BASE_URL + '/').pathname; // "/candadopyme/"
 const UPDATED = '2026-10-13';
-const ASSET_V = '20261013c';
+const ASSET_V = '20261013d';
 
 const LOGO = '<svg viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M10 14V10a6 6 0 0 1 12 0v4"/><rect x="6" y="14" width="20" height="14" rx="2.5" fill="currentColor" fill-opacity=".12"/><path d="M12 21.5l3 3 5.5-6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 

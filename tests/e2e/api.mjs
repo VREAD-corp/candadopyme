@@ -7,7 +7,14 @@ export async function call(action, body = {}) {
   const r = await fetch(API + '?action=' + action, { method: 'POST', body: JSON.stringify({ ...body, key: KEY }) });
   return r.json();
 }
-/** Suma de contadores de prueba (utm_source=e2e) para un evento. */
+/** Suma de los hits de nuestras pruebas (octave_notrack=1, pestaña Exclus) para un evento. */
+export async function excludedCount(event) {
+  const s = await call('summary');
+  let n = 0;
+  for (const [k, v] of Object.entries(s.excluded || {})) if (k.endsWith('|notrack') && k.split(' ')[1] === event) n += v;
+  return n;
+}
+/** Suma de contadores de prueba antiguos (utm_source=e2e) para un evento. */
 export async function e2eCount(event) {
   const s = await call('summary');
   let n = 0;

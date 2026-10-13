@@ -3,7 +3,10 @@
  * Separate from octave-checkout and from every other READ FRANCE project.
  *
  * Actions (POST text/plain JSON, or GET with the same fields as query parameters):
- *   track        cookieless, anonymous daily counters (Stats tab), same pattern as octave-checkout Track.js
+ *   track        cookieless, anonymous daily counters (Stats tab), same pattern as octave-checkout Track.js.
+ *                A hit flagged `excluded` by mesure.js (crawler or headless user agent, navigator.webdriver, or our
+ *                own tests with octave_notrack=1) is counted in the `Exclus` tab by reason instead, so the summary
+ *                shows counted and raw visits side by side.
  *   preorder     B2B pre-sale / waitlist for the Ley 21.719 kit (Preventa tab): company RUT + razón social required
  *   rights       data-subject request about our own data: acceso | rectificacion | supresion | oposicion | portabilidad | bloqueo
  *   ping         health check
@@ -37,6 +40,11 @@ var PREORDER_HEADER = ['created_at', 'updated_at', 'email', 'rut', 'razon_social
 var REQUEST_HEADER = ['created_at', 'type', 'email_sha256', 'message', 'matched_rows', 'status', 'due_date', 'test'];
 var STATS_HEADER = ['date', 'site', 'page', 'event', 'variant', 'source', 'medium', 'campaign', 'count', 'mobile', 'desktop', 'updated_at'];
 var STATS_KEYS = 8;
+var EXCL_HEADER = ['date', 'site', 'page', 'event', 'variant', 'reason', 'count', 'mobile', 'desktop', 'updated_at'];
+var EXCL_KEYS = 6;
+// Why a hit is not a visit (decided in the browser; the user agent itself is never sent).
+// 'legacy': a hit without `v` comes from a mesure.js older than these checks (often a crawler's cached copy).
+var EXCL_REASONS = ['webdriver', 'bot', 'notrack', 'legacy'];
 
 function doGet(e) { return handle_(e, (e && e.parameter) || {}); }
 
@@ -180,35 +188,46 @@ function validateTrack_(req) {
     source: token_(req.utm_source, 50) || ref || '(directo)',
     medium: token_(req.utm_medium, 30), campaign: token_(req.utm_campaign, 50),
     device: req.device === 'mobile' || req.device === 'desktop' ? req.device : '',
+    reason: EXCL_REASONS.indexOf(String(req.excluded || '')) >= 0 ? String(req.excluded) : (req.excluded ? 'bot' : (!req.v ? 'legacy' : '')),
   };
 }
 
 function track_(req) {
   var hit = validateTrack_(req);
   if (!rateOk_('track', APP.ratePerMin)) return { ok: false, error: 'rate_limited' };
-  withLock_(function () { incrementStat_(hit); });
+  withLock_(function () { if (hit.reason) incrementExcluded_(hit); else incrementStat_(hit); });
   return { ok: true };
 }
 
 function incrementStat_(h) {
-  var sh = tab_('Stats', STATS_HEADER);
-  var key = [h.date, h.site, h.page, h.event, h.variant, h.source, h.medium, h.campaign].join('\u001f');
+  incrementRow_('Stats', STATS_HEADER, STATS_KEYS, [h.date, h.site, h.page, h.event, h.variant, h.source, h.medium, h.campaign], h.device);
+}
+
+/** Hits that are not visits: same daily counters, keyed by reason instead of source. */
+function incrementExcluded_(h) {
+  incrementRow_('Exclus', EXCL_HEADER, EXCL_KEYS, [h.date, h.site, h.page, h.event, h.variant, h.reason], h.device);
+}
+
+/** Caller holds the lock. Increments the daily counter row `keys` (date first) of tab `name`, or appends it. */
+function incrementRow_(name, header, nKeys, keys, device) {
+  var sh = tab_(name, header);
+  var key = keys.join('\u001f');
   var last = sh.getLastRow();
   var rowNum = 0;
   var n = Math.min(Math.max(last - 1, 0), 3000);
   if (n > 0) {
-    var vals = sh.getRange(last - n + 1, 1, n, STATS_KEYS).getValues();
+    var vals = sh.getRange(last - n + 1, 1, n, nKeys).getValues();
     for (var i = vals.length - 1; i >= 0; i--) {
-      if (cell_(vals[i][0]) < h.date) break;
+      if (cell_(vals[i][0]) < keys[0]) break;
       if (vals[i].map(cell_).join('\u001f') === key) { rowNum = last - n + 1 + i; break; }
     }
   }
   var stamp = now_().toISOString();
   if (!rowNum) {
-    sh.appendRow([txt_(h.date), h.site, txt_(h.page), h.event, h.variant, txt_(h.source), txt_(h.medium), txt_(h.campaign), 1, h.device === 'mobile' ? 1 : 0, h.device === 'desktop' ? 1 : 0, stamp]);
+    sh.appendRow(keys.map(txt_).concat([1, device === 'mobile' ? 1 : 0, device === 'desktop' ? 1 : 0, stamp]));
   } else {
-    var c = sh.getRange(rowNum, STATS_KEYS + 1, 1, 3).getValues()[0];
-    sh.getRange(rowNum, STATS_KEYS + 1, 1, 4).setValues([[Number(c[0] || 0) + 1, Number(c[1] || 0) + (h.device === 'mobile' ? 1 : 0), Number(c[2] || 0) + (h.device === 'desktop' ? 1 : 0), stamp]]);
+    var c = sh.getRange(rowNum, nKeys + 1, 1, 3).getValues()[0];
+    sh.getRange(rowNum, nKeys + 1, 1, 4).setValues([[Number(c[0] || 0) + 1, Number(c[1] || 0) + (device === 'mobile' ? 1 : 0), Number(c[2] || 0) + (device === 'desktop' ? 1 : 0), stamp]]);
   }
 }
 
@@ -318,6 +337,19 @@ function summary_(req) {
     var src = String(r[5]);
     var k = cell_(r[0]) + ' ' + r[3] + (r[4] ? ' ' + r[4] : '') + (src === 'e2e' ? ' [e2e]' : '');
     out.stats[k] = (out.stats[k] || 0) + Number(r[8] || 0);
+  });
+  // Hits that are not visits, by reason: 'fecha evento [variante] |motivo' -> count; and views counted vs raw per day.
+  out.excluded = {};
+  out.views = {};
+  var view = function (d) { return out.views[d] || (out.views[d] = { counted: 0, excluded: 0, raw: 0 }); };
+  if (st.getLastRow() >= 2) st.getRange(2, 1, st.getLastRow() - 1, STATS_HEADER.length).getValues().forEach(function (r) {
+    if (r[3] === 'view') { var v = view(cell_(r[0])); v.counted += Number(r[8] || 0); v.raw += Number(r[8] || 0); }
+  });
+  var ex = tab_('Exclus', EXCL_HEADER);
+  if (ex.getLastRow() >= 2) ex.getRange(2, 1, ex.getLastRow() - 1, EXCL_HEADER.length).getValues().forEach(function (r) {
+    var k = cell_(r[0]) + ' ' + r[3] + (r[4] ? ' ' + r[4] : '') + ' |' + r[5];
+    out.excluded[k] = (out.excluded[k] || 0) + Number(r[6] || 0);
+    if (r[3] === 'view') { var v = view(cell_(r[0])); v.excluded += Number(r[6] || 0); v.raw += Number(r[6] || 0); }
   });
   if (req.email) out.hasEmail = po.getLastRow() >= 2 && po.getRange(2, 3, po.getLastRow() - 1, 1).getValues().some(function (r) { return String(r[0]) === String(req.email).toLowerCase(); });
   return out;
