@@ -1,5 +1,5 @@
 import { defineConfig } from '@playwright/test';
-const BASE = process.env.BASE || 'http://localhost:4517/candadopyme/';
+const BASE = process.env.BASE || 'http://localhost:4517/';
 export default defineConfig({
   testDir: 'tests/e2e',
   timeout: 90000,

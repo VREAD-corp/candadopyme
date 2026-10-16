@@ -1,6 +1,6 @@
 // Capturas de todas las páginas a 390 px y 1440 px. Uso: node tools/shots.mjs [base]
 import { chromium } from '@playwright/test';
-const base = process.argv[2] || 'http://localhost:4517/candadopyme/';
+const base = process.argv[2] || 'http://localhost:4517/';
 const pages = ['', 'autodiagnostico/', 'politica-de-privacidad/', 'kit/', 'ley-21719/', 'privacidad/', 'terminos/', 'no-existe/'];
 const b = await chromium.launch();
 for (const [w, h, tag] of [[390, 844, 'm'], [1440, 900, 'd']]) {

@@ -9,7 +9,7 @@
     "test": "node --test tests/unit/*.test.mjs",
     "serve": "node tools/serve.mjs",
     "e2e": "playwright test",
-    "e2e:live": "BASE=https://outils.vread.fr/candadopyme/ playwright test"
+    "e2e:live": "BASE=https://candado.jalonel.com/ playwright test"
   },
   "devDependencies": {
     "@playwright/test": "1.62.1"

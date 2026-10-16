@@ -1,6 +1,6 @@
 // Capturas de estados interactivos: resultado del autodiagnóstico, política generada y formulario del kit.
 import { chromium } from '@playwright/test';
-const base = process.argv[2] || 'http://localhost:4517/candadopyme/';
+const base = process.argv[2] || 'http://localhost:4517/';
 const CP = (await import('../docs/assets/core.js')).default;
 const MIX = { inventario: 'si', licitud: 'parcial', politica: 'no', canal: 'si', plazo: 'nose', consentimiento: 'parcial', sensibles: 'na', menores: 'na', encargados: 'si', transferencias: 'no', seguridad: 'parcial', brechas: 'si', conservacion: 'no', confidencialidad: 'si', delegado: 'no' };
 const b = await chromium.launch();

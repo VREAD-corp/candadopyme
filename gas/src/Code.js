@@ -31,7 +31,7 @@ var APP = {
   sites: ['candadopyme'],
   events: ['view', 'cta_click', 'diag_start', 'diag_complete', 'policy_generated', 'policy_copy', 'policy_download',
     'preorder_view', 'preorder_submit', 'sample_view'],
-  ownHosts: ['outils.vread.fr', 'vread-corp.github.io', 'candadopyme.github.io'],
+  ownHosts: ['candado.jalonel.com', 'outils.vread.fr', 'vread-corp.github.io', 'candadopyme.github.io'],
   offers: { 'kit-39000': 39000, 'kit-79000': 79000 },
   sizes: ['micro', 'pequena', 'mediana', 'grande', 'nose'],
   sectors: ['comercio', 'ecommerce', 'salud', 'educacion', 'servicios', 'inmobiliaria', 'turismo', 'tecnologia', 'contabilidad', 'otro'],

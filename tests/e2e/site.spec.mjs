@@ -17,6 +17,7 @@ test('todas las páginas: pie legal, aviso, sin scroll horizontal', async ({ pag
     const foot = page.locator('footer');
     await expect(foot).toContainText('READ FRANCE SAS (SIREN 988 741 773)');
     await expect(foot).toContainText('octave@vread.fr');
+    await expect(foot.getByRole('link', { name: 'Una marca de Jalonel' })).toHaveAttribute('href', 'https://jalonel.com/en/');
     await expect(foot).toContainText('No es asesoría legal');
     await expect(foot.getByRole('link', { name: 'Política de privacidad' })).toBeVisible();
     await expect(foot.getByRole('link', { name: 'Términos y condiciones' })).toBeVisible();

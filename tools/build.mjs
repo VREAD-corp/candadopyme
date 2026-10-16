@@ -1,12 +1,19 @@
 // Construye docs/ a partir de src/pages/*.html (cabecera JSON en la primera línea) con un layout común.
-// Uso: node tools/build.mjs   (BASE_URL=https://candadopyme.github.io para otra ubicación)
+// Uso: node tools/build.mjs   (BASE_URL=https://otro.host/ruta para otra ubicación)
+// Desde el 2026-10-16 el sitio se sirve en la raíz de https://candado.jalonel.com (antes outils.vread.fr/candadopyme/).
 import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const BASE_URL = (process.env.BASE_URL || 'https://outils.vread.fr/candadopyme').replace(/\/$/, '');
-const BASE_PATH = new URL(BASE_URL + '/').pathname; // "/candadopyme/"
+const BASE_URL = (process.env.BASE_URL || 'https://candado.jalonel.com').replace(/\/$/, '');
+const BASE_PATH = new URL(BASE_URL + '/').pathname; // "/"
+const HOST = new URL(BASE_URL).hostname;
+// Clave IndexNow común a los sitios Jalonel, servida en la raíz (https://candado.jalonel.com/<clave>.txt).
+const INDEXNOW_KEY = '5be19f56d46ca3d2553bee28ebfa8edd';
+// Editor: la marca Jalonel (https://jalonel.com/), operada por READ FRANCE SAS.
+const ORG = { '@type': 'Organization', '@id': 'https://jalonel.com/#org', name: 'Jalonel', url: 'https://jalonel.com/',
+  parentOrganization: { '@type': 'Organization', name: 'READ FRANCE SAS', identifier: 'SIREN 988741773' } };
 const UPDATED = '2026-10-13';
 const ASSET_V = '20261013e';
 // Web app de Apps Script propio (gas/): contadores de mesure.js, comportamiento de cro.js y preventa.
@@ -27,7 +34,7 @@ const NAV = [
 function layout(meta, body, root) {
   const canonical = BASE_URL + meta.path;
   const nav = NAV.map(([k, href, label]) => `<a href="${root}${href}"${meta.nav === k ? ' aria-current="page"' : ''}>${label}</a>`).join('\n        ');
-  const ld = meta.ld ? `\n<script type="application/ld+json">${JSON.stringify(meta.ld)}</script>` : '';
+  const ld = meta.ld ? `\n<script type="application/ld+json">${JSON.stringify({ ...meta.ld, ...(meta.ld['@type'] === 'WebSite' ? { url: BASE_URL + '/' } : {}), publisher: ORG })}</script>` : '';
   return `<!doctype html>
 <html lang="es-CL">
 <head>
@@ -50,7 +57,7 @@ ${meta.noindex ? '<meta name="robots" content="noindex">\n' : ''}<meta property=
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,600;7..72,700&family=Public+Sans:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="${root}assets/style.css?v=${ASSET_V}">${ld}
 <script>window.OCTAVE_XP = ${JSON.stringify(OCTAVE_XP)};</script>
-<script src="${root}assets/cro.js?v=${ASSET_V}" data-site="candadopyme" data-api="${API}" data-hosts="outils.vread.fr candadopyme.github.io" data-cta='.btn,[data-mesure="cta_click"]' defer></script>
+<script src="${root}assets/cro.js?v=${ASSET_V}" data-site="candadopyme" data-api="${API}" data-hosts="candado.jalonel.com outils.vread.fr vread-corp.github.io candadopyme.github.io" data-cta='.btn,[data-mesure="cta_click"]' defer></script>
 </head>
 <body data-page="${meta.nav || ''}">
 <a class="skip" href="#main">Saltar al contenido</a>
@@ -68,7 +75,8 @@ ${body.replaceAll('{{root}}', root)}
 <footer class="foot">
   <div class="wrap cols">
     <div>
-      <p><b>Candado Pyme</b> es un servicio de READ FRANCE SAS (SIREN 988 741 773), 11 rue Rouvet, 75019 París, Francia. Contacto: <a href="mailto:octave@vread.fr">octave@vread.fr</a>. Vendemos solo a empresas.</p>
+      <p><b>Candado Pyme</b> · <a href="https://jalonel.com/en/">Una marca de Jalonel</a></p>
+      <p>Operado por READ FRANCE SAS (SIREN 988 741 773), 11 rue Rouvet, 75019 París, Francia. Contacto: <a href="mailto:octave@vread.fr">octave@vread.fr</a>. Vendemos solo a empresas.</p>
       <p class="disclaimer"><b>Aviso:</b> Candado Pyme entrega plantillas de autoayuda. No es asesoría legal ni reemplaza la revisión de un abogado. No tenemos relación con la Agencia de Protección de Datos Personales ni con otro organismo del Estado de Chile. Los textos los preparó Octave, un agente de inteligencia artificial de READ FRANCE, a partir de la Ley N° 21.719 publicada en el Diario Oficial el 13 de diciembre de 2024. Última revisión: 13 de octubre de 2026.</p>
     </div>
     <div>
@@ -113,5 +121,7 @@ writeFileSync(join(ROOT, 'docs', 'sitemap.xml'), `<?xml version="1.0" encoding="
 ${urls.map(([p, pr]) => `  <url><loc>${BASE_URL}${p}</loc><lastmod>${UPDATED}</lastmod><priority>${pr}</priority></url>`).join('\n')}
 </urlset>
 `);
+writeFileSync(join(ROOT, 'docs', 'CNAME'), HOST + '\n');
+writeFileSync(join(ROOT, 'docs', INDEXNOW_KEY + '.txt'), INDEXNOW_KEY);
 writeFileSync(join(ROOT, 'docs', 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${BASE_URL}/sitemap.xml\n`);
 console.log('sitemap:', urls.length, 'urls');

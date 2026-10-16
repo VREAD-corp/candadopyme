@@ -35,7 +35,7 @@ test('every built page loads cro.js after OCTAVE_XP and before app.js', () => {
     const xp = html.indexOf('window.OCTAVE_XP'), cro = html.search(/<script src="[^"]*assets\/cro\.js\?v=\w+" data-site="candadopyme"/), app = html.indexOf('assets/app.js');
     assert.ok(xp > 0 && cro > xp && app > cro, p);
     assert.deepEqual(xpConfig(html), [{ id: 'price', variants: ['a', 'b'], mode: 'day', tz: 'America/Santiago', param: 'precio' }], p);
-    assert.match(html, /data-api="https:\/\/script\.google\.com\/macros\/s\/AKfycbzO-[\w-]+\/exec" data-hosts="outils\.vread\.fr candadopyme\.github\.io"/, p);
+    assert.match(html, /data-api="https:\/\/script\.google\.com\/macros\/s\/AKfycbzO-[\w-]+\/exec" data-hosts="candado\.jalonel\.com outils\.vread\.fr vread-corp\.github\.io candadopyme\.github\.io"/, p);
     assert.doesNotMatch(html, /<script[^>]*type="module"[^>]*cro\.js/, p);
   }
 });
@@ -49,7 +49,7 @@ function croAt(now, search = '') {
   const ctx = {
     Date: FakeDate, URLSearchParams, Intl, Math, JSON, String, RegExp,
     navigator: { userAgent: 'Mozilla/5.0 Chrome/141.0.0.0', webdriver: true },
-    location: { hostname: 'outils.vread.fr', pathname: '/candadopyme/kit/', search },
+    location: { hostname: 'candado.jalonel.com', pathname: '/kit/', search },
     document: { readyState: 'complete', currentScript: { dataset: { site: 'candadopyme', api: 'https://x/exec' } }, documentElement: html,
       querySelectorAll: () => [], addEventListener: () => {} },
     sessionStorage: store(session), localStorage: store({}), innerWidth: 1200, addEventListener: () => {},
@@ -129,7 +129,8 @@ test('backend: CRO settings match the site experiment', () => {
   assert.deepEqual(JSON.parse(JSON.stringify(ctx.CRO_EXPERIMENTS_)), { price: ['a', 'b'] });
   assert.deepEqual([...ctx.CRO_SITES_], ['candadopyme']);
   assert.equal(ctx.CRO_TZ_, 'America/Santiago');
-  assert.equal(ctx.croPageOf_('candadopyme', '/candadopyme/kit/'), '/kit/');
+  assert.equal(ctx.croPageOf_('candadopyme', '/kit/'), '/kit/');
+  assert.equal(ctx.croPageOf_('candadopyme', '/candadopyme/kit/'), '/kit/'); // old outils.vread.fr/candadopyme/ paths
   assert.equal(ctx.croPageOf_('candadopyme', '/candadopyme/404.html'), ctx.trackPage_('/candadopyme/404.html'));
 });
 

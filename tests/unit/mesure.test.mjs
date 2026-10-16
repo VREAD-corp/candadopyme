@@ -8,7 +8,7 @@ const src = fs.readFileSync(new URL('../../docs/assets/mesure.js', import.meta.u
 const CHROME = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36';
 const GOOGLEBOT = 'Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.7390.0 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)';
 
-function run({ ua = CHROME, webdriver = false, search = '', store = {}, prerendering = false, visibility = 'visible', dnt = '', host = 'outils.vread.fr', force = false } = {}) {
+function run({ ua = CHROME, webdriver = false, search = '', store = {}, prerendering = false, visibility = 'visible', dnt = '', host = 'candado.jalonel.com', force = false } = {}) {
   const sent = [], listeners = {};
   const doc = {
     referrer: 'https://www.google.com/', prerendering, visibilityState: visibility, body: { dataset: { page: 'kit' } },
@@ -17,7 +17,7 @@ function run({ ua = CHROME, webdriver = false, search = '', store = {}, prerende
   const ls = { getItem: (k) => (k in store ? store[k] : null), setItem: (k, v) => { store[k] = String(v); }, removeItem: (k) => { delete store[k]; } };
   const ctx = {
     navigator: { userAgent: ua, webdriver, doNotTrack: dnt }, document: doc, localStorage: ls, innerWidth: 1200, URLSearchParams, JSON, Date, String,
-    location: { hostname: host, pathname: '/candadopyme/kit/', search }, CP_API: 'https://script.google.com/x/exec', cpForceTrack: force,
+    location: { hostname: host, pathname: '/kit/', search }, CP_API: 'https://script.google.com/x/exec', cpForceTrack: force,
     fetch: (u, o) => { sent.push(JSON.parse(o.body)); assert.equal(o.credentials, 'omit'); return Promise.resolve(); },
   };
   ctx.window = ctx;
@@ -52,7 +52,16 @@ test('octave_notrack=1 (query, remembered; =0 clears) flags our own tests', () =
 test('Do Not Track and foreign hosts: nothing at all (cpForceTrack still works for tests)', () => {
   assert.equal(run({ dnt: '1' }).sent.length, 0);
   assert.equal(run({ host: 'localhost' }).sent.length, 0);
+  assert.equal(run({ host: 'evil.jalonel.com' }).sent.length, 0);
   assert.equal(run({ host: 'localhost', force: true }).sent.length, 2);
+});
+
+test('counted on candado.jalonel.com and on the old hosts, always as site candadopyme', () => {
+  for (const host of ['candado.jalonel.com', 'outils.vread.fr', 'vread-corp.github.io', 'candadopyme.github.io']) {
+    const r = run({ host });
+    assert.equal(r.sent.length, 2, host);
+    assert.ok(r.sent.every((b) => b.site === 'candadopyme'), host);
+  }
 });
 
 test('prerendered pages count only once activated or shown', () => {
