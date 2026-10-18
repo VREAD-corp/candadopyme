@@ -10,7 +10,7 @@
  *                kind 'cro': the once-per-page behaviour batch of cro.js → Cro.js (vendored byte-identical from
  *                octave-checkout): daily counters in the Comportement and Experiences tabs (A/B 'price': a | b).
  *   cro          aggregated behaviour + A/B summary for the CRO report (key: Script Property CRO_KEY_SHA256)
- *   cro_init     POST only: stores the SHA-256 of the CRO read key once (tools/cro-keys.mjs in vread-revenue-lab)
+ *   cro_init     POST only: stores the SHA-256 of the CRO read key once (tools/cro-keys.mjs in the revenue-lab repo)
  *   preorder     B2B pre-sale / waitlist for the Ley 21.719 kit (Preventa tab): company RUT + razón social required
  *   rights       data-subject request about our own data: acceso | rectificacion | supresion | oposicion | portabilidad | bloqueo
  *   ping         health check
@@ -31,7 +31,7 @@ var APP = {
   sites: ['candadopyme'],
   events: ['view', 'cta_click', 'diag_start', 'diag_complete', 'policy_generated', 'policy_copy', 'policy_download',
     'preorder_view', 'preorder_submit', 'sample_view'],
-  ownHosts: ['candado.jalonel.com', 'outils.vread.fr', 'vread-corp.github.io', 'candadopyme.github.io'],
+  ownHosts: ['candado.jalonel.com'],
   offers: { 'kit-39000': 39000, 'kit-79000': 79000 },
   sizes: ['micro', 'pequena', 'mediana', 'grande', 'nose'],
   sectors: ['comercio', 'ecommerce', 'salud', 'educacion', 'servicios', 'inmobiliaria', 'turismo', 'tecnologia', 'contabilidad', 'otro'],

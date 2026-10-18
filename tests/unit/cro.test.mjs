@@ -164,3 +164,12 @@ test('backend: summary adds cro for the last 7 days (or from..to)', () => {
   assert.deepEqual(b.ctx.croSummaryRange_({ from: '2026-10-01', to: '2026-10-05' }), { from: '2026-10-01', to: '2026-10-05' });
   assert.match(fs.readFileSync(path('gas/src/Code.js'), 'utf8'), /out\.cro = croSummaryRange_\(req\);/);
 });
+
+test('Apps Script: own host only, no reading-site mention, every e-mail (if any) replies to contact@jalonel.com', () => {
+  const code = fs.readFileSync(path('gas/src/Code.js'), 'utf8'), cro = fs.readFileSync(path('gas/src/Cro.js'), 'utf8');
+  assert.match(code, /ownHosts: \['candado\.jalonel\.com'\],/);
+  for (const s of [code, cro]) {
+    assert.doesNotMatch(s, /vread/i);
+    for (const call of s.match(/(MailApp|GmailApp)\.send\w*\([^;]*/g) || []) assert.match(call, /replyTo: *'contact@jalonel\.com'/, call);
+  }
+});
