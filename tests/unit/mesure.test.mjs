@@ -56,12 +56,11 @@ test('Do Not Track and foreign hosts: nothing at all (cpForceTrack still works f
   assert.equal(run({ host: 'localhost', force: true }).sent.length, 2);
 });
 
-test('counted on candado.jalonel.com and on the old hosts, always as site candadopyme', () => {
-  for (const host of ['candado.jalonel.com', 'outils.vread.fr', 'vread-corp.github.io', 'candadopyme.github.io']) {
-    const r = run({ host });
-    assert.equal(r.sent.length, 2, host);
-    assert.ok(r.sent.every((b) => b.site === 'candadopyme'), host);
-  }
+test('counted on candado.jalonel.com only, as site candadopyme', () => {
+  const r = run({ host: 'candado.jalonel.com' });
+  assert.equal(r.sent.length, 2);
+  assert.ok(r.sent.every((b) => b.site === 'candadopyme'));
+  for (const host of ['jalonel.com', 'candadopyme.github.io']) assert.equal(run({ host }).sent.length, 0, host);
 });
 
 test('prerendered pages count only once activated or shown', () => {

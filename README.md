@@ -1,6 +1,6 @@
 # Candado Pyme
 
-**Site:** https://candado.jalonel.com/ (since 2026-10-16; before: `outils.vread.fr/candadopyme/`, which now redirects).
+**Site:** https://candado.jalonel.com/ (since 2026-10-16; the old URLs redirect there). Contact: contact@jalonel.com.
 Brand: Candado Pyme, una marca de Jalonel (https://jalonel.com/), a brand of READ FRANCE SAS.
 
 Free Ley 21.719 self-assessment (15 questions), free privacy-policy generator (art. 14 ter) and B2B pre-sale of the
@@ -9,8 +9,8 @@ Ley 21.719 template kit for Chilean SMEs. Operated by READ FRANCE SAS (Octave, A
 
 - `src/pages/*.html` + `tools/build.mjs` → `docs/` (GitHub Pages, `main:/docs`). `BASE_URL` env var changes the canonical base (default `https://candado.jalonel.com`, served at the root); the build also writes `docs/CNAME` and the IndexNow key file `5be19f56d46ca3d2553bee28ebfa8edd.txt`.
 - `docs/assets/core.js`: scoring + policy builder (browser and Node). `app.js`: UI. `mesure.js`: cookieless counters.
-- `docs/assets/cro.js`: Octave behaviour counters + A/B framework, vendored byte-identical from `octave-checkout/gas/web/cro.js`
-  (never edit the copy). Loaded in `<head>` by `tools/build.mjs` right after `window.OCTAVE_XP`, before app.js.
+- `docs/assets/cro.js`: Octave behaviour counters + A/B framework, vendored byte-identical from `octave-checkout/gas/web/jalonel/cro.js`
+  (Jalonel copy: counts only on the `data-hosts` host `candado.jalonel.com`; never edit the copy; `tests/cro/cro.check.mjs` is its Jalonel check). Loaded in `<head>` by `tools/build.mjs` right after `window.OCTAVE_XP`, before app.js.
 - `gas/`: standalone Apps Script web app with its own Sheet (track, preorder, rights, summary, purge_tests, reset_stats,
   and `cro` / `cro_init` + `track` kind `cro` from the vendored `gas/src/Cro.js`: tabs Comportement and Experiences;
   `summary` includes `cro`). Deploy: `gas/scripts/deploy.sh` (keeps the deployment id).

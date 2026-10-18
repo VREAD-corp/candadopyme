@@ -1,6 +1,6 @@
 // Construye docs/ a partir de src/pages/*.html (cabecera JSON en la primera línea) con un layout común.
 // Uso: node tools/build.mjs   (BASE_URL=https://otro.host/ruta para otra ubicación)
-// Desde el 2026-10-16 el sitio se sirve en la raíz de https://candado.jalonel.com (antes outils.vread.fr/candadopyme/).
+// Desde el 2026-10-16 el sitio se sirve en la raíz de https://candado.jalonel.com.
 import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -15,7 +15,7 @@ const INDEXNOW_KEY = '5be19f56d46ca3d2553bee28ebfa8edd';
 const ORG = { '@type': 'Organization', '@id': 'https://jalonel.com/#org', name: 'Jalonel', url: 'https://jalonel.com/',
   parentOrganization: { '@type': 'Organization', name: 'READ FRANCE SAS', identifier: 'SIREN 988741773' } };
 const UPDATED = '2026-10-13';
-const ASSET_V = '20261013e';
+const ASSET_V = '20261018a';
 // Web app de Apps Script propio (gas/): contadores de mesure.js, comportamiento de cro.js y preventa.
 const API = 'https://script.google.com/macros/s/AKfycbzO-UZhV1aVTEDgAj95jk2fktbBxOZNr1eQ9kvv1_nOu6q2LMCnBhsgSt-pBGpJNyKx/exec';
 // Prueba de precio (A/B): A = CLP 39.000, B = CLP 79.000, alterna por día calendario de Santiago (sin almacenamiento),
@@ -57,7 +57,7 @@ ${meta.noindex ? '<meta name="robots" content="noindex">\n' : ''}<meta property=
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,600;7..72,700&family=Public+Sans:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="${root}assets/style.css?v=${ASSET_V}">${ld}
 <script>window.OCTAVE_XP = ${JSON.stringify(OCTAVE_XP)};</script>
-<script src="${root}assets/cro.js?v=${ASSET_V}" data-site="candadopyme" data-api="${API}" data-hosts="candado.jalonel.com outils.vread.fr vread-corp.github.io candadopyme.github.io" data-cta='.btn,[data-mesure="cta_click"]' defer></script>
+<script src="${root}assets/cro.js?v=${ASSET_V}" data-site="candadopyme" data-api="${API}" data-hosts="candado.jalonel.com" data-cta='.btn,[data-mesure="cta_click"]' defer></script>
 </head>
 <body data-page="${meta.nav || ''}">
 <a class="skip" href="#main">Saltar al contenido</a>
@@ -76,7 +76,7 @@ ${body.replaceAll('{{root}}', root)}
   <div class="wrap cols">
     <div>
       <p><b>Candado Pyme</b> · <a href="https://jalonel.com/en/">Una marca de Jalonel</a></p>
-      <p>Operado por READ FRANCE SAS (SIREN 988 741 773), 11 rue Rouvet, 75019 París, Francia. Contacto: <a href="mailto:octave@vread.fr">octave@vread.fr</a>. Vendemos solo a empresas.</p>
+      <p>Operado por READ FRANCE SAS (SIREN 988 741 773), 11 rue Rouvet, 75019 París, Francia. Contacto: <a href="mailto:contact@jalonel.com">contact@jalonel.com</a>. Vendemos solo a empresas.</p>
       <p class="disclaimer"><b>Aviso:</b> Candado Pyme entrega plantillas de autoayuda. No es asesoría legal ni reemplaza la revisión de un abogado. No tenemos relación con la Agencia de Protección de Datos Personales ni con otro organismo del Estado de Chile. Los textos los preparó Octave, un agente de inteligencia artificial de READ FRANCE, a partir de la Ley N° 21.719 publicada en el Diario Oficial el 13 de diciembre de 2024. Última revisión: 13 de octubre de 2026.</p>
     </div>
     <div>

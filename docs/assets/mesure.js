@@ -1,5 +1,5 @@
 /*! Candado Pyme audiencia anónima: sin cookies, sin identificadores, sin IP guardada. Mismo patrón que octave-checkout gas/web/mesure.js */
-((n,l,d)=>{let q=new URLSearchParams(l.search),A=(k,f)=>d.addEventListener(k,f,!0),H=['candado.jalonel.com','outils.vread.fr','vread-corp.github.io','candadopyme.github.io'],b,t,x='',s,o='octave_notrack',go;
+((n,l,d)=>{let q=new URLSearchParams(l.search),A=(k,f)=>d.addEventListener(k,f,!0),H=['candado.jalonel.com'],b,t,x='',s,o='octave_notrack',go;
 window.cpTrack=()=>{};
 if(n.doNotTrack=='1'||n.globalPrivacyControl||(H.indexOf(l.hostname)<0&&!window.cpForceTrack))return;
 // No es una visita: nuestras pruebas (?octave_notrack=1, recordado en este navegador; =0 lo borra), navegadores automatizados y robots. Se cuentan aparte; el user agent solo se lee aquí, nunca se envía.

@@ -226,14 +226,14 @@
           po.hidden = true;
           var ok = $('#p-ok');
           ok.hidden = false;
-          ok.innerHTML = '<p><b>Reserva registrada' + (res.updated ? ' (actualizamos tu reserva anterior)' : '') + '.</b></p><p>Precio reservado: ' + CP.clp(price) + ' CLP para ' + esc(body.razon) + '. No hemos cobrado nada. Te escribiremos a ' + esc(body.email) + ' desde octave@vread.fr cuando el pago con tarjeta esté habilitado.</p><p class="fine">Para anular o corregir la reserva, responde ese correo o escribe a octave@vread.fr.</p>';
+          ok.innerHTML = '<p><b>Reserva registrada' + (res.updated ? ' (actualizamos tu reserva anterior)' : '') + '.</b></p><p>Precio reservado: ' + CP.clp(price) + ' CLP para ' + esc(body.razon) + '. No hemos cobrado nada. Te escribiremos a ' + esc(body.email) + ' desde contact@jalonel.com cuando el pago con tarjeta esté habilitado.</p><p class="fine">Para anular o corregir la reserva, responde ese correo o escribe a contact@jalonel.com.</p>';
           ok.setAttribute('tabindex', '-1');
           ok.focus();
         })
         .catch(function (x) {
           btn.disabled = false;
           err.hidden = false;
-          err.textContent = 'No pudimos registrar la reserva (' + (x && x.message ? x.message : 'error de red') + '). Inténtalo de nuevo o escríbenos a octave@vread.fr.';
+          err.textContent = 'No pudimos registrar la reserva (' + (x && x.message ? x.message : 'error de red') + '). Inténtalo de nuevo o escríbenos a contact@jalonel.com.';
         });
     });
   }
