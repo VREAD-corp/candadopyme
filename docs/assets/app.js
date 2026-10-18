@@ -226,7 +226,7 @@
           po.hidden = true;
           var ok = $('#p-ok');
           ok.hidden = false;
-          ok.innerHTML = '<p><b>Reserva registrada' + (res.updated ? ' (actualizamos tu reserva anterior)' : '') + '.</b></p><p>Precio reservado: ' + CP.clp(price) + ' CLP para ' + esc(body.razon) + '. No hemos cobrado nada. Te escribiremos a ' + esc(body.email) + ' desde contact@jalonel.com cuando el pago con tarjeta esté habilitado.</p><p class="fine">Para anular o corregir la reserva, responde ese correo o escribe a contact@jalonel.com.</p>';
+          ok.innerHTML = '<p><b>Reserva registrada' + (res.updated ? ' (actualizamos tu reserva anterior)' : '') + '.</b></p><p>Precio reservado: ' + CP.clp(price) + ' CLP para ' + esc(body.razon) + '. No hemos cobrado nada. El equipo de Jalonel te escribirá a ' + esc(body.email) + ' cuando el pago con tarjeta esté habilitado.</p><p class="fine">Para anular o corregir la reserva, responde ese correo o escribe a contact@jalonel.com.</p>';
           ok.setAttribute('tabindex', '-1');
           ok.focus();
         })
