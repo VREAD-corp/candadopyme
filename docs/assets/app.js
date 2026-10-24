@@ -198,6 +198,7 @@
     rutIn.addEventListener('blur', function () { rutCheck(true); });
     po.addEventListener('submit', function (e) {
       e.preventDefault();
+      if (po.getAttribute('data-paused')) return; // en pausa desde el 2026-10-24: no se envía ninguna reserva
       var err = $('#p-error');
       var msgs = [];
       $$('.invalid', po).forEach(function (el) { el.classList.remove('invalid'); });

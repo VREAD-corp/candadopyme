@@ -24,6 +24,9 @@ test('todas las páginas: pie legal, aviso, sin scroll horizontal', async ({ pag
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     expect(overflow, 'scroll horizontal en ' + p).toBeLessThanOrEqual(0);
     expect(await page.title()).toMatch(/Candado Pyme|Ley 21\.719/);
+    // en pausa desde el 2026-10-24: una sola etiqueta robots (noindex) y el banner
+    expect(await page.locator('meta[name=robots]').evaluateAll((m) => m.map((x) => x.content)), p).toEqual(['noindex']);
+    await expect(page.locator('body > .jal-pause')).toContainText('Este servicio está en pausa.');
   }
 });
 
@@ -121,25 +124,16 @@ test('precio A/B (cro.js, OCTAVE_XP price): ?precio=b muestra $79.000 y la ofert
   expect(croPosts).toEqual([]);
 });
 
-test('preventa: valida RUT y B2B, y registra la reserva en la hoja', async ({ page }, info) => {
-  const email = `e2e-${info.project.name}-${Date.now()}@example.com`;
+test('preventa cerrada durante la pausa: campos desactivados, nada se envía', async ({ page }) => {
+  const posts = [];
+  page.on('request', (r) => { if (r.method() === 'POST' && /"action":"preorder"/.test(r.postData() || '')) posts.push(r.url()); });
   await page.goto('kit/?precio=a&diag=50');
-  await page.fill('#p-razon', 'Prueba Automatizada SpA');
-  await page.fill('#p-rut', '76.086.428-4');
-  await page.fill('#p-email', email);
-  await page.getByRole('button', { name: /Reservar el kit/ }).click();
-  await expect(page.locator('#p-error')).toContainText('El RUT no es válido');
-  await expect(page.locator('#p-error')).toContainText('solo para empresas');
-  await page.fill('#p-rut', '76.086.428-5');
-  await page.check('#p-b2b');
-  await page.check('#p-consent');
-  await page.check('#p-buzon');
-  await page.selectOption('#p-size', 'pequena');
-  await page.getByRole('button', { name: /Reservar el kit/ }).click();
-  await expect(page.locator('#p-ok')).toContainText('Reserva registrada', { timeout: 30000 });
-  await expect(page.locator('#p-ok')).toContainText('$39.000');
-  const s = await call('summary', { email });
-  expect(s.hasEmail).toBe(true);
+  await expect(page.locator('#preorder .paused-note')).toHaveText('Las nuevas solicitudes están cerradas durante la pausa.');
+  await expect(page.locator('#p-email')).toBeDisabled();
+  await expect(page.locator('#p-submit')).toBeDisabled();
+  await page.locator('#preorder').evaluate((f) => f.requestSubmit());
+  await expect(page.locator('#p-ok')).toBeHidden();
+  expect(posts).toEqual([]);
 });
 
 test('medición anónima: los contadores de pruebas suben (view y diag_complete), no las visitas', async ({ page }) => {

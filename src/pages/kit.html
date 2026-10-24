@@ -35,7 +35,9 @@
         </ul>
         <p class="note" style="font-size:0.92rem"><b>Cómo funciona la preventa:</b> el pago con tarjeta en pesos todavía no está habilitado. Si reservas, no te cobramos nada ahora: el equipo de Jalonel te escribe por correo electrónico con el enlace de pago apenas esté listo, al precio que ves hoy. El kit ya está escrito: lo recibes por correo el mismo día que pagas.</p>
 
-        <form id="preorder" novalidate>
+        <form id="preorder" novalidate data-paused="1">
+          <p class="paused-note">Las nuevas solicitudes están cerradas durante la pausa.</p>
+          <fieldset class="paused-fs" disabled>
           <input type="hidden" name="offer" id="p-offer" value="kit-39000">
           <div class="hp" aria-hidden="true"><label for="p-website">No completar</label><input id="p-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
           <div class="row"><label for="p-razon">Razón social</label><input id="p-razon" name="razon" type="text" autocomplete="organization" required></div>
@@ -54,6 +56,7 @@
           <p id="p-error" class="err" role="alert" hidden></p>
           <button class="btn" type="submit" id="p-submit" style="width:100%;margin-top:8px">Reservar el kit a <span data-price>$39.000</span></button>
           <p class="fine" style="margin-top:8px">Sin cobro ahora. Puedes anular la reserva respondiendo el correo.</p>
+          </fieldset>
         </form>
         <div id="p-ok" class="ok-msg" hidden></div>
       </div>

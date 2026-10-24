@@ -15,7 +15,10 @@ const INDEXNOW_KEY = '5be19f56d46ca3d2553bee28ebfa8edd';
 const ORG = { '@type': 'Organization', '@id': 'https://jalonel.com/#org', name: 'Jalonel', url: 'https://jalonel.com/',
   parentOrganization: { '@type': 'Organization', name: 'READ FRANCE SAS', identifier: 'SIREN 988741773' } };
 const UPDATED = '2026-10-13';
-const ASSET_V = '20261018a';
+const ASSET_V = '20261024a';
+// En pausa desde el 2026-10-24 (decisión de los fundadores, recentrado de Jalonel): noindex en todas las páginas (el sitemap
+// sigue el campo noindex de cada página), banner de pausa y preventa cerrada. La medición sigue igual.
+const PAUSED = true;
 // Web app de Apps Script propio (gas/): contadores de mesure.js, comportamiento de cro.js y preventa.
 const API = 'https://script.google.com/macros/s/AKfycbzO-UZhV1aVTEDgAj95jk2fktbBxOZNr1eQ9kvv1_nOu6q2LMCnBhsgSt-pBGpJNyKx/exec';
 // Prueba de precio (A/B): A = CLP 39.000, B = CLP 79.000, alterna por día calendario de Santiago (sin almacenamiento),
@@ -43,7 +46,7 @@ function layout(meta, body, root) {
 <title>${meta.title}</title>
 <meta name="description" content="${meta.description}">
 <link rel="canonical" href="${canonical}">
-${meta.noindex ? '<meta name="robots" content="noindex">\n' : ''}<meta property="og:type" content="${meta.ogType || 'website'}">
+${PAUSED || meta.noindex ? '<meta name="robots" content="noindex">\n' : ''}<meta property="og:type" content="${meta.ogType || 'website'}">
 <meta property="og:title" content="${meta.ogTitle || meta.title}">
 <meta property="og:description" content="${meta.description}">
 <meta property="og:url" content="${canonical}">
@@ -61,6 +64,7 @@ ${meta.noindex ? '<meta name="robots" content="noindex">\n' : ''}<meta property=
 </head>
 <body data-page="${meta.nav || ''}">
 <a class="skip" href="#main">Saltar al contenido</a>
+<div class="jal-pause" role="note"><p>Este servicio está en pausa. Otras herramientas: <a href="https://jalonel.com/en/">jalonel.com</a></p></div>
 <header class="top">
   <div class="wrap">
     <a class="brand" href="${root}">${LOGO}<span>Candado Pyme</span></a>

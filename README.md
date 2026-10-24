@@ -1,5 +1,7 @@
 # Candado Pyme
 
+**Paused since 24/10/2026** (founders' decision, Jalonel refocus): noindex, banner, requests closed; tracking kept.
+
 **Site:** https://candado.jalonel.com/ (since 2026-10-16; the old URLs redirect there). Contact: contact@jalonel.com.
 Brand: Candado Pyme, una marca de Jalonel (https://jalonel.com/), a brand of READ FRANCE SAS.
 
